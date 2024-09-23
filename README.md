@@ -1,5 +1,5 @@
 - Hi, I’m @tommybarker2
-- I’m interested in coding obviously. I love web development. I also play a lot of sports (XC, track, basketball, pickleball, skiing). Into chess, reading, watching Survivor, Spikeball,
+- I’m interested in coding, obviously. I love web development. I also play a lot of sports (XC, track, basketball, pickleball, skiing). Into chess, reading, watching Survivor, Spikeball, math trivia, et cetetera.
 - I’m currently learning HTML/CSS/JS for web development and Kotlin for Android Studio (I'm really bad so far)
 - How to reach me: tommybarker0812@gmail.com
 - Pronouns: he/him
