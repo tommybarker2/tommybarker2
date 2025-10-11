@@ -1,6 +1,6 @@
 const body = document.getElementById("body");
 let cellArray = [];
-const quoteArray = "the quick brown fox jumps over the lazy dog";
+const quoteArray = " the quick brown fox jumps over the lazy dog";
 
 const grid_width = 5;
 const grid_height = 10;
@@ -24,14 +24,14 @@ for (let i = 0; i < grid_width * grid_height; ++i) {
     cell.style.left = cell_width * (i % grid_width) + cell_left_fudge + "px";
     cell.style.top = cell_height * Math.floor(i / grid_width) + cell_top_fudge + "px";
     
-    let rand_red = rand(120, 225);
-    let rand_green = rand(150, 255);
-    let rand_blue = rand(150, 255);
-    let rand_alpha = rand(60, 100);
+    let rand_red = rand(100, 225);
+    let rand_green = rand(100, 255);
+    let rand_blue = rand(100, 255);
+    let rand_alpha = rand(60, 80);
     cell.style.background = rgb(rand_red, rand_green, rand_blue, rand_alpha);
 
     let random = Math.random();
-    let emoticonArray = [":D", ":)", ":3", ":I", ":O", ":P", ":(", ":V", ":J", ":|", ":/", ":>", ":]"];
+    let emoticonArray = [":D", ":)", ":3", ":I", ":O", ":P", ":(", ":V", ":J", ":|", ":/", ":>", ":]", ":0"];
     for (let k = 0; k < emoticonArray.length; ++k) {
         if (random < (k + 1) / emoticonArray.length) {
             cell.innerText = emoticonArray[k];
