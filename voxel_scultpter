@@ -13,7 +13,8 @@
         
         body {
             font-family: "Courier New", Courier, monospace;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            /*background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);*/
+            background: linear-gradient(135deg, #4a6a97 0%, #3a4b73 100%);
             min-height: 100vh;
             padding: 20px;
             color: #fff;
@@ -27,11 +28,12 @@
         h1 {
             text-align: center;
             margin-bottom: 10px;
-            font-size: 2.5em;
+            font-size: 4em;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
         
         .subtitle {
+            font-size: 22px;
             text-align: center;
             margin-bottom: 30px;
             opacity: 0.9;
@@ -46,6 +48,10 @@
             background: rgba(255,255,255,0.1);
             padding: 40px;
             backdrop-filter: blur(10px);
+        }
+
+        #top-face-label {
+            margin-right: 410px;
         }
         
         .top-row {
@@ -80,14 +86,19 @@
 
         #canvasY {
             /* No transform needed */
+            margin-right: 410px;
+            border-bottom: 10px dashed #e35c4d;
+            border-right: 10px dashed #57e0a4;
         }
         
         #canvasZ {
-            transform: rotate(180deg);
+            transform: scaleY(-1);
+            border-bottom: 10px dashed #e35c4d;
         }
         
         #canvasX {
             transform: rotate(270deg);
+            border-right: 10px dashed #57e0a4;
         }
                 
         
@@ -99,19 +110,39 @@
         .controls button {
             padding: 12px 30px;
             margin: 0 10px;
-            font-size: 16px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-size: 20px;
+            background: linear-gradient(135deg, #9acbe4 0%, #4aa5b5 100%);
             color: white;
-            border: 2px solid white;
-            border-radius: 25px;
+            border: 0px solid white;
+            border-radius: 10px;
             cursor: pointer;
             font-weight: bold;
             transition: all 0.3s;
+            box-shadow: 1px 1px 3px black;
         }
         
         .controls button:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+
+        #demo-container {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .controls .demo {
+            padding: 12px 30px;
+            margin: 0 10px;
+            font-size: 14px;
+            background: linear-gradient(135deg, #B9F78Dff 0%, #78E89Cff 100%);
+            color: white;
+            border: 0px solid white;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 1px 1px 3px black;            
         }
         
         .color-palette {
@@ -162,14 +193,17 @@
         }
         
         .error {
-            background: rgba(255, 50, 50, 0.8);
+            color: #124;
+            background: #e35c4d;
         }
         
         .success {
-            background: rgba(50, 255, 50, 0.8);
+            color: #114;
+            background: #d9ff85;
         }
         
         .info {
+            width: 2000px;
             background: rgba(255, 255, 255, 0.2);
             margin-bottom: 20px;
         }
@@ -178,16 +212,15 @@
 <body>
     <div class="container">
         <h1>3D Voxel Sculptor</h1>
-        <p class="subtitle">Draw silhouettes to carve out a 3D model with colored faces!</p>
-        
-        <div class="message info">
-            Each face of the voxels will be colored based on the view you draw on!
+         
+        <div class="message info" style="font-size: 22px;">
+            Draw silhouettes to carve out a 3D model with colored faces!<br><br>Each face of the voxels will be colored based on the view you draw on!
         </div>
         
         <div class="canvas-grid">
             <div class="top-row">
                 <div class="canvas-container top-face">
-                    <label>Top View (Y-axis, looking down)</label>
+                    <label id="top-face-label">Top View (Y-axis, looking down)</label>
                     <canvas id="canvasY" width="320" height="320"></canvas>
                 </div>
             </div>
@@ -207,12 +240,20 @@
             <div id="colorPalette" class="color-palette"></div>
             <button onclick="clearAll()">Clear All</button>
             <button onclick="generateVoxelModel()">Generate 3D Model</button>
-            <button onclick="createCube()">Load Cube</button>
+            <div id="demo-container">
+                <button class="demo" onclick="createCube()">Load Cube</button>
+                <button class="demo" onclick="createCubeFrame()">Load Cube Frame</button>
+                <button class="demo" onclick="createTree()">Load Tree</button>
+                <button class="demo" onclick="createLilGuy()">Load Lil Guy</button>
+            </div>
         </div>
         
         <div id="message"></div>
         
         <div id="renderer"></div>
+
+        <p class="subtitle"><br><br><u style="font-size: 28px;"><b>Extra Information:</b></u><br>Welcome to the Voxel Sculptor! Our program takes in 3 8x8 pixel canvases and transforms it into a 3d rendered voxel model. How does it work? Well first we start with intersections of all 3 canvases. In a way, our program acts as if we're using a cookie cutter on each side of an 8x8x8 cube. Then depending on the color of each pixel, we color in each corresponding side. While we have room improve, we are very happy with our finished products! Thanks for taking the time to check it out</p>
+       
     </div>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -249,7 +290,7 @@
         const contexts = {};
         const grids = {};
         let isDrawing = false;
-        let currentColor = PALETTE[5]; // Start with white
+        let currentColor = PALETTE[0]; // Start with black
         
         // Initialize canvases
         Object.keys(canvases).forEach(key => {
@@ -337,7 +378,7 @@
                 mouseX = e.clientX - rect.left;
                 mouseY = e.clientY - rect.top;
             } else {
-                mouseX = CANVAS_SIZE - (e.clientX - rect.left);
+                mouseX = e.clientX - rect.left;
                 mouseY = CANVAS_SIZE - (e.clientY - rect.top);
             }
             
@@ -380,11 +421,63 @@
             showMessage('Demo loaded! You should see a cube with different colored faces.', 'success');
         }
 
+        function createCubeFrame() {
+            clearAll();
+
+            drawRectangle('x', 1, VOXEL_SIZE - 1 , 1, VOXEL_SIZE - 1, '#4aa5b5');
+            drawRectangle('x', 2, VOXEL_SIZE - 2 , 2, VOXEL_SIZE - 2, '#ffffff');
+            drawRectangle('y', 1, VOXEL_SIZE - 1, 1, VOXEL_SIZE - 1, '#e35c4d');
+            drawRectangle('y', 1, 6, 2, 6, '#ffffff');
+            drawRectangle('z', 1, VOXEL_SIZE - 1, 1, VOXEL_SIZE - 1, '#57e0a4');
+            drawRectangle('z', 2, 7, 2, 6, '#ffffff');
+
+            ['x', 'y', 'z'].forEach(key => drawGrid(key));
+            
+            showMessage('Demo loaded! You should see a winding cube frame with different colored faces.', 'success');
+        }
+
         function createTree() {
             clearAll();
 
-            drawRectangle('x', )
+            drawRectangle('x', VOXEL_SIZE - 3, VOXEL_SIZE - 1, 1, VOXEL_SIZE - 1, '#57e0a4');
+            drawRectangle('x', VOXEL_SIZE - 1, VOXEL_SIZE, 2, VOXEL_SIZE - 2, '#57e0a4');
+            drawRectangle('x', 0, VOXEL_SIZE - 3, 3, 5, '#ad4359');
+            drawRectangle('z', 1, VOXEL_SIZE - 1, VOXEL_SIZE - 3, VOXEL_SIZE - 1, '#57e0a4');
+            drawRectangle('z', 2, VOXEL_SIZE - 2, VOXEL_SIZE - 1, VOXEL_SIZE, '#57e0a4');
+            drawRectangle('z', 3, 5, 0, VOXEL_SIZE - 3, '#ad4359');
+            drawRectangle('y', 1, VOXEL_SIZE - 1, 2, VOXEL_SIZE - 2, '#57e0a4');
+            drawRectangle('y', 2, VOXEL_SIZE - 2, 1, VOXEL_SIZE - 1, '#57e0a4');
+
+            ['x', 'y', 'z'].forEach(key => drawGrid(key));
+            
+            showMessage('Demo loaded! You should see a basic tree model.', 'success');
         }
+
+        function createLilGuy() {
+            clearAll();
+
+            drawRectangle('x', 2, 3, 0, 8, '#ffb5c8');
+            drawRectangle('x', 0, 3, 2, 6, '#ff6d9d');
+            drawRectangle('x', 4, 7, 2, 6, '#ff6d9d');
+            //drawRectangle('x', 2, 3, 0, 8, '#ffab68');
+            drawRectangle('x', 3, 4, 3, 5, '#b65a96');
+            drawRectangle('x', 5, 6, 3, 4, '#3a3b3e');
+            drawRectangle('x', 5, 6, 5, 6, '#3a3b3e');
+
+            drawRectangle('y', 3, 4, 0, 8, '#ffb5c8');
+            drawRectangle('y', 2, 5, 2, 6, '#ff6d9d');
+            //drawRectangle('y', 3, 4, 0, 8, '#ffab68');
+
+            drawRectangle('z', 2, 5, 0, 3, '#ff6d9d');
+            drawRectangle('z', 2, 5, 4, 7, '#ff6d9d');
+            drawRectangle('z', 3, 4, 3, 4, '#b65a96');
+            drawRectangle('z', 3, 4, 2, 3, '#ffb5c8');
+
+            ['x', 'y', 'z'].forEach(key => drawGrid(key));
+            
+            showMessage('Demo loaded! You should see a basic little fella.', 'success');
+        }
+
         
         function isColorSolid(color) {
             return color !== '#ffffff';
@@ -498,7 +591,7 @@
             scene.background = new THREE.Color(0x1a1a2e);
             
             camera = new THREE.PerspectiveCamera(75, window.innerWidth / 600, 0.1, 1000);
-            camera.position.set(25 * VOXEL_SIZE / 8, 25 * VOXEL_SIZE / 8, 25 * VOXEL_SIZE / 8);
+            camera.position.set(10, 12, 10);
             camera.lookAt(0, 0, 0);
             
             renderer = new THREE.WebGLRenderer({ antialias: true });
